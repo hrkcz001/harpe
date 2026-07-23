@@ -1,0 +1,38 @@
+# Cabal build artifacts
+dist/
+dist-newstyle/
+.cabal-sandbox/
+cabal.sandbox.config
+cabal.project.local
+cabal.project.local~
+.ghc.environment.*
+
+# GHC intermediate files
+*.hi
+*.hi-boot
+*.o
+*.o-boot
+*.dyn_hi
+*.dyn_o
+*.prof
+*.hp
+*.eventlog
+
+# Stack (if ever used)
+.stack-work/
+
+# Generated files (do not commit compiled templates)
+harpe-compiled/
+
+# Editor / OS artifacts
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+
+# Test coverage
+.hpc/

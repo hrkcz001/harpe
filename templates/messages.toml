@@ -1,0 +1,92 @@
+# Harpe Compiler Diagnostic Messages
+# ====================================
+# This is the canonical reference for all user-facing diagnostic text.
+# Harpe.Templates (src/Harpe/Templates.hs) is the compiled Haskell form of this file.
+# When you change a message here, mirror the change in Harpe.Templates.
+#
+# Format:
+#   CODE.message = Human-readable description. {placeholders} in braces.
+#   CODE.hint    = Optional fix suggestion shown below the error.
+#
+# Output format:
+#   harpe EXXX — <description>
+#     <details>
+#     Fix: <hint>
+#
+# Code ranges:
+#   E0xx  — Validation errors (caught before parsing)
+#   E1xx  — Parse errors
+#   E2xx  — Compiler / codegen errors
+#   W0xx  — Warnings
+
+# ── Validation errors (E0xx) ──────────────────────────────────────────────────
+
+E001.message = harpe E001 — line {lineNo}: block opener must be on its own separate line.
+E001.detail  = A '//= default', '//= chunk', '//= crude', '//= alien' etc. opener cannot share a line with HTML content or closing tags.
+E001.hint    = Move the block opener to its own line.
+
+E002.message = harpe E002 — line {lineNo}: block closer '=//' must be on its own separate line.
+E002.hint    = Put '=//' on its own line with no other content.
+
+E003.message = harpe E003 — unbalanced block structure.
+E003.detail  = One or more blocks were opened but never closed.
+E003.hint    = Check that every //= root / chunk / crude / default / alien has a matching =// closer.
+
+E004.message = harpe E004 — event binding '{name}' is not valid camelCase.
+E004.detail  = Event bindings must start with 'on' followed by an uppercase letter.
+E004.hint    = Examples: onClick, onKeyDown, onMouseEnter
+
+# ── Parse errors (E1xx) ───────────────────────────────────────────────────────
+
+E101.message = harpe E101 — unexpected end of file while looking for '{target}'.
+E101.hint    = Check that the block starting before this point is properly closed with =//.
+
+E102.message = harpe E102 — expected a word boundary after keyword '{keyword}'.
+E102.hint    = Add a space after the keyword.
+
+E103.message = harpe E103 — template parse failed: {detail}.
+E103.hint    = Check for malformed //= ... =// directives near the indicated position.
+
+# ── Compiler / codegen errors (E2xx) ─────────────────────────────────────────
+
+E201.message = harpe E201 — unsafe FFI call to alien '{name}' outside a guarded context.
+E201.detail  = Inside crude blocks, alien functions must be called via 'imply transform' or 'imply inform'.
+E201.hint    = Wrap the call with: imply transform {name} ... or imply inform {name}
+
+E202.message = harpe E202 — 'imply inform {name}' is not allowed outside of crude blocks.
+E202.hint    = Move the 'imply inform' directive inside a //= crude ... =// block.
+
+E203.message = harpe E203 — 'imply transform {name}' is not allowed outside of crude blocks.
+E203.hint    = Move the 'imply transform' directive inside a //= crude ... =// block.
+
+E204.message = harpe E204 — alien source file not found: '{path}'.
+E204.hint    = Check the path in //= add alien ... from {path} =//. Paths are relative to the .harpe source file.
+
+E205.message = harpe E205 — alien function '{name}' not found in '{path}'.
+E205.hint    = Verify the function name matches an alien transformer or informer definition in that file.
+
+E206.message = harpe E206 — invalid argument '{arg}' in pattern '{pat}'.
+E206.hint    = Allowed forms: string literal ("str"), number (42), boolean (True/False), wildcard (_), variable (x), typed variable (x :: T), nested constructor (Ctor arg1 ...).
+
+E207.message = harpe E207 — invalid pattern in '//= on {pat} =//'.
+E207.detail  = Constructor must start with an uppercase letter.
+E207.hint    = Patterns must begin with a constructor like Done, ValueChanged, RedirectTo ...
+
+E208.message = harpe E208 — named crude block '{name}' used in invalid context.
+E208.detail  = Named crude blocks are top-level declarations and cannot be nested inside view nodes.
+E208.hint    = Move the crude block to the top level of the template.
+
+E209.message = harpe E209 — failed to parse alien file '{path}': {detail}.
+E209.hint    = Fix the syntax error in the referenced .harpe file first.
+
+E210.message = harpe E210 — clinch template '{path}' could not be processed: {detail}.
+E210.hint    = Make sure the referenced .harpe file exists and compiles cleanly on its own.
+
+E211.message = harpe error: module_boilerplate.hs template not found at '{path}'.
+E211.detail  = This file is required to compile MVU modules.
+E211.hint    = Reinstall harpe or check your templates/ directory.
+
+# ── Warnings (W0xx) ──────────────────────────────────────────────────────────
+
+W001.message = harpe warning: could not locate templates directory, using './templates' as fallback.
+W001.hint    = Reinstall harpe or ensure the templates/ directory is accessible next to the executable.

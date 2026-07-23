@@ -1,0 +1,65 @@
+cabal-version:      3.14
+name:               harpe
+version:            0.1.0.0
+synopsis:           Harpe MVU template engine for GHC WASM
+description:        Harpe is a reactive template engine and compiler for GHC WebAssembly.
+license:            Apache-2.0
+license-file:       LICENSE
+author:             hrkcz001
+maintainer:         hrkcz001@example.com
+copyright:          2026 hrkcz001
+category:           Web, Compiler
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+data-files:         templates/wasm_main.hs
+                  , templates/wasm_main.js
+                  , templates/module_boilerplate.hs
+
+common warnings
+    ghc-options: -Wall
+    build-depends:    base ^>=4.22.0.0
+                    , directory
+                    , filepath
+                    , ghc-experimental
+                    , text
+
+library
+    import:           warnings
+    exposed-modules:  Harpe.AST
+                    -- Grammar constants (leaf modules — no Harpe.* imports)
+                    , Harpe.Syntax
+                    , Harpe.CodeGen.Names
+                    -- Parser
+                    , Harpe.Parser.Combinators
+                    , Harpe.Parser
+                    -- Compiler utilities
+                    , Harpe.Compiler.Common
+                    , Harpe.Compiler.Alien
+                    , Harpe.Compiler.PatternValidator
+                    , Harpe.Compiler.NodeUtils
+                    , Harpe.Compiler.ViewGen
+                    , Harpe.Compiler.EffectsGen
+                    , Harpe.Compiler
+                    -- Error / template strings
+                    , Harpe.Templates
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+executable harpe
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    harpe
+    hs-source-dirs:   app
+    default-language: Haskell2010
+
+test-suite harpe-test
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Spec.hs
+    other-modules:    TestHelper
+                    , CoreSpec
+                    , CompilerSpec
+                    , ParserSpec
+    build-depends:    harpe, harpe-core
+    default-language: Haskell2010
